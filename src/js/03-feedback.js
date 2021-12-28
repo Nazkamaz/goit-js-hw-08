@@ -1,30 +1,26 @@
 import throttle from 'lodash.throttle';
 
-const elements = {
-  form: document.querySelector('.feedback-form'),
-  inputEmail: document.querySelector('.feedback-form input'),
-  textareaText: document.querySelector('.feedback-form textarea'),
-  submitButton: document.querySelector('.feedback-form button'),
-};
+const formRef = document.querySelector('form');
+console.log(formRef);
+const inputEmail = formRef.elements.email;
+const textareaText = formRef.elements.message;
+
 const localStorageKey = 'feedback-form-state';
 const storageObj = {
   email: '',
   message: '',
 };
 basicStorage();
-// populateEmail();
-// populateTextarea();
 
-elements.form.addEventListener('submit', onFormSubmit);
-elements.inputEmail.addEventListener('input', throttle(onEmailInput, 500));
-elements.textareaText.addEventListener('input', throttle(onTextareaInput, 500));
+formRef.addEventListener('submit', onFormSubmit);
+inputEmail.addEventListener('input', throttle(onEmailInput, 500));
+textareaText.addEventListener('input', throttle(onTextareaInput, 500));
 
 function basicStorage() {
   const currLocStor = localStorage.getItem(localStorageKey);
 
   const parsLocStor = JSON.parse(currLocStor);
-  //   console.log(parsLocStor.email);
-  //   console.log(parsLocStor.message);
+
   if (!parsLocStor) {
     localStorage.setItem(localStorageKey, JSON.stringify(storageObj));
   } else {
@@ -35,7 +31,7 @@ function basicStorage() {
 
 function onFormSubmit(event) {
   event.preventDefault();
-  if (elements.inputEmail.value === '' || elements.textareaText.value === '') {
+  if (inputEmail.value === '' || textareaText.value === '') {
     window.alert('one or both of the fields are empty!');
     return;
   }
@@ -47,12 +43,11 @@ function onFormSubmit(event) {
 
 function populateEmail() {
   const locStorCurr = localStorage.getItem(localStorageKey);
-  //   console.log(locStorCurr);
+
   const parsLocStorCurr = JSON.parse(locStorCurr);
-  //   console.log(parsLocStorCurr);
 
   if (parsLocStorCurr.email) {
-    elements.inputEmail.value = parsLocStorCurr.email;
+    inputEmail.value = parsLocStorCurr.email;
   }
 }
 
@@ -60,16 +55,15 @@ function populateTextarea() {
   const locStorCurr = localStorage.getItem(localStorageKey);
   const parsLocStorCurr = JSON.parse(locStorCurr);
   if (parsLocStorCurr.message) {
-    elements.textareaText.value = parsLocStorCurr.message;
+    textareaText.value = parsLocStorCurr.message;
   }
 }
 
 function onEmailInput(event) {
   const emailValue = event.target.value;
   const currLocStor = localStorage.getItem(localStorageKey);
-  //   console.log(currLocStor);
+
   const parsLocStor = JSON.parse(currLocStor);
-  //   console.log(parsLocStor);
 
   if (!parsLocStor) {
     localStorage.setItem(localStorageKey, JSON.stringify(storageObj));
@@ -87,7 +81,7 @@ function onEmailInput(event) {
 function onTextareaInput(event) {
   const currTextareaValue = event.target.value;
   const currentLocStor = localStorage.getItem(localStorageKey);
-  //   console.log(currentLocStor);
+
   const parsCurrentLocStor = JSON.parse(currentLocStor);
 
   if (!parsCurrentLocStor) {

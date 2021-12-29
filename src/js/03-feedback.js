@@ -1,7 +1,6 @@
 import throttle from 'lodash.throttle';
 
 const formRef = document.querySelector('form');
-console.log(formRef);
 const inputEmail = formRef.elements.email;
 const textareaText = formRef.elements.message;
 
@@ -13,8 +12,7 @@ const storageObj = {
 basicStorage();
 
 formRef.addEventListener('submit', onFormSubmit);
-inputEmail.addEventListener('input', throttle(onEmailInput, 500));
-textareaText.addEventListener('input', throttle(onTextareaInput, 500));
+formRef.addEventListener('input', throttle(onFormInput, 500));
 
 function basicStorage() {
   const currLocStor = localStorage.getItem(localStorageKey);
@@ -59,8 +57,9 @@ function populateTextarea() {
   }
 }
 
-function onEmailInput(event) {
-  const emailValue = event.target.value;
+function onFormInput(event) {
+  const formValue = event.target.value;
+
   const currLocStor = localStorage.getItem(localStorageKey);
 
   const parsLocStor = JSON.parse(currLocStor);
@@ -70,28 +69,18 @@ function onEmailInput(event) {
 
     const locStor = localStorage.getItem(localStorageKey);
     const parsLocStor = JSON.parse(locStor);
-    parsLocStor.email = emailValue;
+    if (event.target.name === 'email') {
+      parsLocStor.email = formValue;
+    } else if (event.target.name === 'message') {
+      parsLocStor.message = formValue;
+    }
     localStorage.setItem(localStorageKey, JSON.stringify(parsLocStor));
   } else {
-    parsLocStor.email = emailValue;
+    if (event.target.name === 'email') {
+      parsLocStor.email = formValue;
+    } else if (event.target.name === 'message') {
+      parsLocStor.message = formValue;
+    }
     localStorage.setItem(localStorageKey, JSON.stringify(parsLocStor));
-  }
-}
-
-function onTextareaInput(event) {
-  const currTextareaValue = event.target.value;
-  const currentLocStor = localStorage.getItem(localStorageKey);
-
-  const parsCurrentLocStor = JSON.parse(currentLocStor);
-
-  if (!parsCurrentLocStor) {
-    localStorage.setItem(localStorageKey, JSON.stringify(storageObj));
-    const locStor = localStorage.getItem(localStorageKey);
-    const parsLocStor = JSON.parse(locStor);
-    parsLocStor.message = currTextareaValue;
-    localStorage.setItem(localStorageKey, JSON.stringify(parsLocStor));
-  } else {
-    parsCurrentLocStor.message = currTextareaValue;
-    localStorage.setItem(localStorageKey, JSON.stringify(parsCurrentLocStor));
   }
 }
